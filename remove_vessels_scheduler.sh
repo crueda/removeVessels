@@ -96,7 +96,9 @@ def main():
             con = mdb.connect(BBDD_HOST, BBDD_USERNAME, BBDD_PASSWORD, BBDD_NAME)
             cur = con.cursor()
 
-            cur.execute('SELECT DEVICE_ID FROM VEHICLE where BASTIDOR="DELETE"')
+            sql = 'SELECT DEVICE_ID FROM VEHICLE where BASTIDOR="DELETE"'
+            logger.debug(sql)
+            cur.execute(sql)
             numrows = int(cur.rowcount)
 
             if (numrows>0):
@@ -114,32 +116,44 @@ def main():
 
                 logger.info('Borrando TRACKING...')
                 curTracking = con.cursor()
-                curTracking.execute('DELETE FROM TRACKING where DEVICE_ID IN (' + deviceList + ')')
+                sql = 'DELETE FROM TRACKING where DEVICE_ID IN (' + deviceList + ')'
+                logger.debug(sql)
+                curTracking.execute(sql)
                 curTracking.close() 
 
                 logger.info('Borrando TRACKING_1...')
                 curTracking1 = con.cursor()
-                curTracking1.execute('DELETE FROM TRACKING_1 where DEVICE_ID IN (' + deviceList + ')')
+                sql = 'DELETE FROM TRACKING_1 where DEVICE_ID IN (' + deviceList + ')'
+                logger.debug(sql)
+                curTracking1.execute(sql)
                 curTracking1.close() 
                 
                 logger.info('Borrando TRACKING_5...')
                 curTracking5 = con.cursor()
-                curTracking5.execute('DELETE FROM TRACKING_5 where DEVICE_ID IN (' + deviceList + ')')
+                sql = 'DELETE FROM TRACKING_5 where DEVICE_ID IN (' + deviceList + ')'
+                logger.debug(sql)
+                curTracking5.execute(sql)
                 curTracking5.close() 
 
                 logger.info('Borrando OBT...')
                 curObt = con.cursor()
-                curObt.execute('DELETE FROM OBT where DEVICE_ID IN (' + deviceList + ')')
+                sql = 'DELETE FROM OBT where DEVICE_ID IN (' + deviceList + ')'
+                logger.debug(sql)
+                curObt.execute(sql)
                 curObt.close() 
 
                 logger.info('Borrando HAS...')
                 curHas = con.cursor()
-                curHas.execute('DELETE FROM HAS where DEVICE_ID IN (' + deviceList + ')')
+                sql = 'DELETE FROM HAS where DEVICE_ID IN (' + deviceList + ')'
+                logger.debug(sql)
+                curHas.execute(sql)
                 curHas.close() 
 
                 logger.info('Borrando VEHICLE...')
                 curVehicle = con.cursor()
-                curVehicle.execute('DELETE FROM VEHICLE where DEVICE_ID IN (' + deviceList + ')')
+                sql = 'DELETE FROM VEHICLE where DEVICE_ID IN (' + deviceList + ')'
+                logger.debug(sql)
+                curVehicle.execute(sql)
                 curVehicle.close() 
 
                 con.commit() 
