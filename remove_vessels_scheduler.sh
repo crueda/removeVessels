@@ -97,7 +97,7 @@ def main():
             cur = con.cursor()
 
             sql = 'SELECT DEVICE_ID FROM VEHICLE where BASTIDOR="DELETE"'
-            logger.debug(sql)
+            #logger.debug(sql)
             cur.execute(sql)
             numrows = int(cur.rowcount)
 
@@ -107,11 +107,10 @@ def main():
                 for i in range(numrows):
                     row = cur.fetchone()
                     if (deviceList == ''):
-                        deviceList = row[0]
+                        deviceList = str(row[0])
                     else:
-                        deviceList = deviceList + "," + row[0]
+                        deviceList = str(deviceList) + "," + str(row[0])
 
-                deviceList = str(deviceList)
                 logger.info('Lista de barcos a borrar: ' + deviceList)
 
                 logger.info('Borrando TRACKING...')
@@ -158,8 +157,8 @@ def main():
 
                 con.commit() 
 
-            else:
-                logger.info("No existen barcos pendientes de borrado")
+            #else:
+                #logger.info("No existen barcos pendientes de borrado")
 
         except mdb.Error, e:
             print "Error %d: %s" % (e.args[0], e.args[1])
