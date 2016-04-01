@@ -17,6 +17,7 @@ import os
 import sys
 import utm
 import logging, logging.handlers
+import MySQLdb as mdb
 
 ########################################################################
 # configuracion y variables globales
@@ -90,9 +91,71 @@ pidfile.close()
 
 def main():
     while True:
-        
+        con = None
+        try:
+            con = mdb.connect(BBDD_HOST, BBDD_USERNAME, BBDD_PASSWORD, BBDD_NAME)
+            cur = con.cursor()
 
-    
+            cur.execute('SELECT DEVICE_ID FROM VEHICLE where BASTIDOR="DELETE"')
+            numrows = int(cur.rowcount)
+
+            if (numrows>0):
+
+                deviceList = ''
+                for i in range(numrows):
+                    row = cur.fetchone()
+                    if (deviceList == ''):
+                        deviceList = row[0]
+                    else:
+                        deviceList = deviceList + "," + row[0]
+
+                deviceList = str(deviceList)
+                logger.info('Lista de barcos a borrar: ' + deviceList)
+
+                logger.info('Borrando TRACKING...')
+                curTracking = con.cursor()
+                curTracking.execute('DELETE FROM TRACKING where DEVICE_ID IN (' + deviceList + ')')
+                curTracking.close() 
+
+                logger.info('Borrando TRACKING_1...')
+                curTracking1 = con.cursor()
+                curTracking1.execute('DELETE FROM TRACKING_1 where DEVICE_ID IN (' + deviceList + ')')
+                curTracking1.close() 
+                
+                logger.info('Borrando TRACKING_5...')
+                curTracking5 = con.cursor()
+                curTracking5.execute('DELETE FROM TRACKING_5 where DEVICE_ID IN (' + deviceList + ')')
+                curTracking5.close() 
+
+                logger.info('Borrando OBT...')
+                curObt = con.cursor()
+                curObt.execute('DELETE FROM OBT where DEVICE_ID IN (' + deviceList + ')')
+                curObt.close() 
+
+                logger.info('Borrando HAS...')
+                curHas = con.cursor()
+                curHas.execute('DELETE FROM HAS where DEVICE_ID IN (' + deviceList + ')')
+                curHas.close() 
+
+                logger.info('Borrando VEHICLE...')
+                curVehicle = con.cursor()
+                curVehicle.execute('DELETE FROM VEHICLE where DEVICE_ID IN (' + deviceList + ')')
+                curVehicle.close() 
+
+                con.commit() 
+
+            else:
+                logger.info("No existen barcos pendientes de borrado")
+
+        except mdb.Error, e:
+            print "Error %d: %s" % (e.args[0], e.args[1])
+            sys.exit(1)
+
+        finally:
+            if con:
+                con.close()
+
+    sleep(SLEEP_TIME)
 
 if __name__ == '__main__':
     main()
